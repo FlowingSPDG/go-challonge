@@ -66,6 +66,7 @@ type Participant struct {
     Name string `json:"display_name"`
     Misc string `json:"misc"`
     Seed int `json:"seed"`
+    FinalRank int `json:"final_rank"`
     Wins int
     Losses int
     TotalScore int

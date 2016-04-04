@@ -76,6 +76,7 @@ type Match struct {
     Id int `json:"id"`
     Identifier string `json:"identifier"`
     State string `json:"state"`
+    Round int `json:"round"`
     PlayerOneId int `json:"player1_id"`
     PlayerTwoId int `json:"player2_id"`
     PlayerOneScore int

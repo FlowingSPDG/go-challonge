@@ -78,7 +78,9 @@ type Match struct {
     State string `json:"state"`
     Round int `json:"round"`
     PlayerOneId int `json:"player1_id"`
+    PlayerOnePrereqMatch string `json:"player1_prereq_match_id"`
     PlayerTwoId int `json:"player2_id"`
+    PlayerTwoPrereqMatch string `json:"player2_prereq_match_id"`
     PlayerOneScore int
     PlayerTwoScore int
     UpdatedAt *time.Time `json:"updated_at,omitempty"`

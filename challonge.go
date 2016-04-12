@@ -371,6 +371,9 @@ func (p *Participant) Win() {
 }
 
 func (m *Match) ResolveParticipants(t *Tournament) {
+    if m.State != "complete" {
+        return
+    }
     m.PlayerOne = t.GetParticipant(m.PlayerOneId)
     m.PlayerTwo = t.GetParticipant(m.PlayerTwoId)
 

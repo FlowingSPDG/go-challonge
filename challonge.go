@@ -323,7 +323,7 @@ func (t *Tournament) GetOpenMatches() []*Match {
 
 /** resolves and returns matches for tournament */
 func (t *Tournament) getMatches(state string) []*Match {
-	matches := make([]*Match, 0)
+	matches := make([]*Match, 0, len(t.Matches))
 
 	for _, m := range t.Matches {
 		m.ResolveParticipants(t)
@@ -389,14 +389,14 @@ func (m *Match) ResolveParticipants(t *Tournament) {
 }
 
 func (t *Tournament) resolveRelations() *Tournament {
-	participants := make([]*Participant, 0)
+	participants := make([]*Participant, 0, len(t.ParticipantItems))
 	for _, item := range t.ParticipantItems {
 		participants = append(participants, &item.Participant)
 	}
 	t.Participants = participants
 	t.ParticipantItems = nil
 
-	matches := make([]*Match, 0)
+	matches := make([]*Match, 0, len(t.MatchItems))
 	for _, item := range t.MatchItems {
 		match := item.Match
 		match.ResolveParticipants(t)
@@ -409,7 +409,7 @@ func (t *Tournament) resolveRelations() *Tournament {
 }
 
 func DiffMatches(matches1 []*Match, matches2 []*Match) []*Match {
-	diff := make([]*Match, 0)
+	diff := make([]*Match, 0, len(matches1))
 
 	for i, _ := range matches1 {
 		if i >= len(matches2) {

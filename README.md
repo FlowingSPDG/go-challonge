@@ -4,14 +4,14 @@ Golang API client for retrieving (and potentially updating) tournaments in  [Cha
 
 ## Install
 
-    $ go get github.com/aspic/go-challonge
+    $ go get github.com/FlowingSPDG/go-challonge
 
 ## Usage
 
 ### Load and initialize
 
     package main
-    import "github.com/aspic/go-challonge"
+    import "github.com/FlowingSPDG/go-challonge"
     
     fun main() {
         client := challonge.New("challonge-user", "challonge-key")

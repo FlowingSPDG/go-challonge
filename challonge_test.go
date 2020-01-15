@@ -54,3 +54,16 @@ func TestGetFinalRank(t *testing.T) {
 		t.Logf("%s's FinalRank : %d\n", participant.Name, participant.FinalRank)
 	}
 }
+
+func TestRandomize(t *testing.T) {
+	client := challonge.New(User, Key)
+	tournament, err := client.NewTournamentRequest("sample_tournament_1").WithParticipants().Get()
+	if err != nil {
+		t.Fatalf("unable to retrieve tournament.\nERR : %v\n", err)
+	}
+	t.Logf("Tournament : %v\n", tournament)
+	err = tournament.Randomize()
+	if err != nil {
+		t.Fatalf("unable to randomize tournament.\nERR : %v\n", err)
+	}
+}

@@ -230,6 +230,17 @@ func (t *Tournament) Start() error {
 	return nil
 }
 
+func (t *Tournament) Randomize() error {
+	url := client.buildUrl("tournaments/"+t.GetUrl()+"/participants/randomize", nil)
+	response := &APIResponse{}
+	doPost(url, response)
+	fmt.Printf("resp : %v\n", response)
+	if response.hasErrors() {
+		return fmt.Errorf("error randomizing participants:  %q", response.Errors[0])
+	}
+	return nil
+}
+
 func (t *Tournament) Finalize() error {
 	v := *params(map[string]string{
 		"include_participants": "1",

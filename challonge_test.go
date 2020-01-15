@@ -27,5 +27,17 @@ func TestNew(t *testing.T) {
 
 	participant := tournament.Participants
 	t.Logf("Participant : %v\n", participant)
+}
 
+func TestFinalize(t *testing.T) {
+	client := challonge.New(User, Key)
+	tournament, err := client.NewTournamentRequest("ProjectGIARS_TEST").Get()
+	if err != nil {
+		t.Fatalf("unable to retrieve tournament.\nERR : %v\n", err)
+	}
+	t.Logf("Tournament : %v\n", tournament)
+	err = tournament.Finalize()
+	if err != nil {
+		t.Fatalf("unable to finish tournament.\nERR : %v\n", err)
+	}
 }

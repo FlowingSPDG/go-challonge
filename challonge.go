@@ -230,6 +230,29 @@ func (t *Tournament) Start() error {
 	return nil
 }
 
+func (t *Tournament) Finalize() error {
+	v := *params(map[string]string{
+		"include_participants": "1",
+		"include_matches":      "1",
+	})
+	url := client.buildUrl("tournaments/"+t.GetUrl()+"/finalize", v)
+	response := &APIResponse{}
+	doPost(url, response)
+	if response.hasErrors() {
+		return fmt.Errorf("error finishing tournament:  %q", response.Errors[0])
+	}
+	tournament := response.getTournament()
+	if tournament.State == "complete" {
+		if debug {
+			log.Printf("tournament %q completed", tournament.Name)
+		}
+	} else {
+		return fmt.Errorf("tournament has state %q, probably not finished", tournament.State)
+	}
+	t = tournament
+	return nil
+}
+
 func (t *Tournament) SubmitMatch(m *Match) (*Match, error) {
 	v := *params(map[string]string{
 		"match[scores_csv]": fmt.Sprintf("%d-%d", m.PlayerOneScore, m.PlayerTwoScore),

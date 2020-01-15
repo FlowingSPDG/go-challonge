@@ -31,7 +31,7 @@ func TestNew(t *testing.T) {
 
 func TestFinalize(t *testing.T) {
 	client := challonge.New(User, Key)
-	tournament, err := client.NewTournamentRequest("ProjectGIARS_TEST").Get()
+	tournament, err := client.NewTournamentRequest("sample_tournament_1").Get()
 	if err != nil {
 		t.Fatalf("unable to retrieve tournament.\nERR : %v\n", err)
 	}
@@ -39,5 +39,18 @@ func TestFinalize(t *testing.T) {
 	err = tournament.Finalize()
 	if err != nil {
 		t.Fatalf("unable to finish tournament.\nERR : %v\n", err)
+	}
+}
+
+// Tournament should be finalized...
+func TestGetFinalRank(t *testing.T) {
+	client := challonge.New(User, Key)
+	tournament, err := client.NewTournamentRequest("sample_tournament_1").WithParticipants().Get()
+	if err != nil {
+		t.Fatalf("unable to retrieve tournament.\nERR : %v\n", err)
+	}
+	t.Logf("Tournament : %v\n", tournament)
+	for _, participant := range tournament.Participants {
+		t.Logf("%s's FinalRank : %d\n", participant.Name, participant.FinalRank)
 	}
 }

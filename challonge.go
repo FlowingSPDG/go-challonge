@@ -535,8 +535,8 @@ func handleResponse(r *http.Response, v interface{}) {
 	}
 	err = json.Unmarshal(body, v)
 	if err != nil {
-		log.Printf("Error unmarshaling json. ERR : %v, BODY : %s\n ", err, string(body))
-
+		//log.Printf("Error unmarshaling json. ERR : %v, BODY : %s\n ", err, string(body))
+		log.Printf("Error unmarshaling json. ERR : %s\n ", err)
 	}
 	if debug {
 		log.Print("unmarshaled to ", v)

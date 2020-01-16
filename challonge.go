@@ -232,13 +232,33 @@ func (t *Tournament) Start() error {
 
 func (t *Tournament) Randomize() error {
 	url := client.buildUrl("tournaments/"+t.GetUrl()+"/participants/randomize", nil)
-	response := &APIResponse{}
+	response := &RandomizeAPIResponse{}
 	doPost(url, response)
-	fmt.Printf("resp : %v\n", response)
 	if response.hasErrors() {
 		return fmt.Errorf("error randomizing participants:  %q", response.Errors[0])
 	}
+	fmt.Printf("resp : %v\n", response)
+	if response == nil {
+		return fmt.Errorf("error randomizing participants")
+	}
 	return nil
+}
+
+type RandomizeAPIResponse struct {
+	Response []APIResponse
+	Errors   []string `json:"errors"`
+}
+
+func (r *RandomizeAPIResponse) hasErrors() bool {
+	if debug {
+		log.Printf("response had errors: %q", r.Errors)
+	}
+	for _, resp := range r.Response {
+		if len(resp.Errors) > 0 {
+			return true
+		}
+	}
+	return len(r.Errors) > 0
 }
 
 func (t *Tournament) Finalize() error {
@@ -515,7 +535,8 @@ func handleResponse(r *http.Response, v interface{}) {
 	}
 	err = json.Unmarshal(body, v)
 	if err != nil {
-		log.Print("Error unmarshaling json ", err)
+		log.Printf("Error unmarshaling json. ERR : %v, BODY : %s\n ", err, string(body))
+
 	}
 	if debug {
 		log.Print("unmarshaled to ", v)

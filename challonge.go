@@ -270,6 +270,20 @@ func (t *Tournament) Randomize() error {
 	return nil
 }
 
+func (t *Tournament) Destroy() error {
+	url := client.buildUrl("tournaments/"+t.GetUrl(), nil)
+	response := &APIResponse{}
+	doDelete(url, response)
+	if response.hasErrors() {
+		return fmt.Errorf("error randomizing participants:  %q", response.Errors[0])
+	}
+	fmt.Printf("resp : %v\n", response)
+	if response == nil {
+		return fmt.Errorf("error randomizing participants")
+	}
+	return nil
+}
+
 type RandomizeAPIResponse struct {
 	Response []APIResponse
 	Errors   []string `json:"errors"`

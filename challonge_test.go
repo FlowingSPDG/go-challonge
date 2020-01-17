@@ -29,6 +29,18 @@ func TestCreate(t *testing.T) {
 	t.Logf("Participant : %v\n", participant)
 }
 
+func TestDestroy(t *testing.T) {
+	client := challonge.New(User, Key)
+	tournament, err := client.NewTournamentRequest("ProjectGIARS_TEST").Get()
+	if err != nil {
+		t.Fatalf("unable to retrieve tournament.\nERR : %v\n", err)
+	}
+	err = tournament.Destroy()
+	if err != nil {
+		t.Fatalf("unable to destroy tournament.\nERR : %v\n", err)
+	}
+}
+
 func TestGet(t *testing.T) {
 	client := challonge.New(User, Key)
 	tournament, err := client.NewTournamentRequest("sample_tournament_1").Get()

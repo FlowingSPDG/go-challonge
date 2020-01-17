@@ -67,3 +67,15 @@ func TestRandomize(t *testing.T) {
 		t.Fatalf("unable to randomize tournament.\nERR : %v\n", err)
 	}
 }
+
+func TestGetTournaments(t *testing.T) {
+	client := challonge.New(User, Key)
+	tournaments, err := client.GetTournaments("all", "single elimination", "")
+	if err != nil {
+		t.Fatalf("unable to get tournaments.\nERR : %v\n", err)
+	}
+	t.Logf("Got %d items\n", len(tournaments))
+	for i := 0; i < len(tournaments); i++ {
+		t.Logf("Item %d : %v\n", i+1, tournaments[i])
+	}
+}

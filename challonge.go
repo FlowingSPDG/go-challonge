@@ -155,6 +155,31 @@ func (r *APIResponse) getTournament() *Tournament {
 	return r.Tournament.resolveRelations()
 }
 
+type GetTournamentsResponse struct {
+	Tournament *Tournament `json:"tournament"`
+	//Errors []string `json:"errors"`
+}
+
+// GetTournaments Get tournaments that belongs to your account.
+func (c *Client) GetTournaments(state string, rtype string, subdomain string) ([]*Tournament, error) {
+	v := *params(map[string]string{})
+	v = *params(map[string]string{
+		"state": state, // all, pending, in_progress, ended
+		"type":  rtype, // single elimination, double elimination, round robin, swiss
+	})
+	if subdomain != "" {
+		v.Set("subdomain", subdomain)
+	}
+	url := client.buildUrl("tournaments", v)
+	response := []GetTournamentsResponse{}
+	doGet(url, &response)
+	tournaments := make([]*Tournament, 0, len(response))
+	for i := 0; i < len(response); i++ {
+		tournaments = append(tournaments, response[i].Tournament)
+	}
+	return tournaments, nil
+}
+
 func (c *Client) NewTournamentRequest(id string) *TournamentRequest {
 	return &TournamentRequest{client: c, Id: id, Params: make(map[string]string, 0)}
 }

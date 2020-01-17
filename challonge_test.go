@@ -11,7 +11,25 @@ const (
 	Key  string = ""
 )
 
-func TestNew(t *testing.T) {
+func TestCreate(t *testing.T) {
+	client := challonge.New(User, Key)
+	tournament, err := client.CreateTournament("MY_TEST_TOURNAMENT_GIARS", "MY_TEST_TOURNAMENT_GIARS", "MY_TEST_TOURNAMENT_GIARS", false, "single elimination", "TEST DESCRIPTION")
+
+	if err != nil {
+		t.Fatalf("unable to retrieve tournament.\nERR : %v\n", err)
+	}
+	t.Logf("Tournament : %v\n", tournament)
+	t.Logf("Tournament name: %s\n", tournament.Name)
+	t.Logf("Tournament desc: %s\n", tournament.Description)
+
+	matches := tournament.GetMatches()
+	t.Logf("Matches : %v\n", matches)
+
+	participant := tournament.Participants
+	t.Logf("Participant : %v\n", participant)
+}
+
+func TestGet(t *testing.T) {
 	client := challonge.New(User, Key)
 	tournament, err := client.NewTournamentRequest("sample_tournament_1").Get()
 

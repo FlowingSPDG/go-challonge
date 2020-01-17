@@ -211,12 +211,13 @@ func (r *TournamentRequest) Get() (*Tournament, error) {
 }
 
 /** creates a new tournament */
-func (c *Client) CreateTournament(name string, subUrl string, domain string, open bool, tType string) (*Tournament, error) {
+func (c *Client) CreateTournament(name string, subUrl string, domain string, open bool, tType string, desc string) (*Tournament, error) {
 	v := *params(map[string]string{
 		"tournament[name]":        name,
 		"tournament[url]":         subUrl,
 		"tournament[open_signup]": "false",
 		"tournament[subdomain]":   domain,
+		"tournament[description]": desc,
 	})
 	if tType == "" || tType == "single" {
 		v.Add("tournament[tournament_type]", "single elimination")

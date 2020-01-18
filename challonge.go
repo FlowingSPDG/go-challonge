@@ -258,10 +258,18 @@ func (t *Tournament) Start() error {
 
 func (t *Tournament) Randomize() error {
 	url := client.buildUrl("tournaments/"+t.GetUrl()+"/participants/randomize", nil)
-	response := RandomizeAPIResponse{}
+	var response interface{}
 	doPost(url, &response)
-	if response.hasErrors() {
-		return fmt.Errorf("error randomizing participants:  %q", response.Errors)
+	if _, ok := response.([]interface{}); ok {
+		// fmt.Println("OK?")
+		// fmt.Printf("response is []interface{} : %v\n", response.([]interface{}))
+	} else if _, ok := response.(map[string]interface{}); ok { //response.(map[string][]string)
+		res := response.(map[string]interface{})
+		return fmt.Errorf("%v", res["errors"].([]interface{}))
+	} else {
+		fmt.Println("UNKNOWN JSON")
+		fmt.Printf("response is unknown : %v\n", response)
+		return fmt.Errorf("Unknown JSON")
 	}
 	return nil
 }
@@ -278,21 +286,6 @@ func (t *Tournament) Destroy() error {
 		return fmt.Errorf("error randomizing participants")
 	}
 	return nil
-}
-
-type RandomizeAPIResponse struct {
-	Participant []Participant `json:"participant"`
-	Errors      []string      `json:"errors"`
-}
-
-func (r *RandomizeAPIResponse) hasErrors() bool {
-	if debug {
-		log.Printf("response had errors: %q", r.Errors)
-	}
-	if len(r.Errors) > 0 {
-		return true
-	}
-	return len(r.Errors) > 0
 }
 
 func (t *Tournament) Finalize() error {

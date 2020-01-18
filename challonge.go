@@ -258,14 +258,10 @@ func (t *Tournament) Start() error {
 
 func (t *Tournament) Randomize() error {
 	url := client.buildUrl("tournaments/"+t.GetUrl()+"/participants/randomize", nil)
-	response := &RandomizeAPIResponse{}
-	doPost(url, response)
+	response := RandomizeAPIResponse{}
+	doPost(url, &response)
 	if response.hasErrors() {
-		return fmt.Errorf("error randomizing participants:  %q", response.Errors[0])
-	}
-	fmt.Printf("resp : %v\n", response)
-	if response == nil {
-		return fmt.Errorf("error randomizing participants")
+		return fmt.Errorf("error randomizing participants:  %q", response.Errors)
 	}
 	return nil
 }
@@ -285,18 +281,16 @@ func (t *Tournament) Destroy() error {
 }
 
 type RandomizeAPIResponse struct {
-	Response []APIResponse
-	Errors   []string `json:"errors"`
+	Participant []Participant `json:"participant"`
+	Errors      []string      `json:"errors"`
 }
 
 func (r *RandomizeAPIResponse) hasErrors() bool {
 	if debug {
 		log.Printf("response had errors: %q", r.Errors)
 	}
-	for _, resp := range r.Response {
-		if len(resp.Errors) > 0 {
-			return true
-		}
+	if len(r.Errors) > 0 {
+		return true
 	}
 	return len(r.Errors) > 0
 }
@@ -573,6 +567,7 @@ func handleResponse(r *http.Response, v interface{}) {
 	if err != nil {
 		log.Fatal("unable to read response", err)
 	}
+	// fmt.Printf("body : %v\n", string(body))
 	err = json.Unmarshal(body, v)
 	if err != nil {
 		//log.Printf("Error unmarshaling json. ERR : %v, BODY : %s\n ", err, string(body))

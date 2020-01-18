@@ -31,7 +31,7 @@ func TestCreate(t *testing.T) {
 
 func TestDestroy(t *testing.T) {
 	client := challonge.New(User, Key)
-	tournament, err := client.NewTournamentRequest("ProjectGIARS_TEST").Get()
+	tournament, err := client.NewTournamentRequest("sample_tournament_1").Get()
 	if err != nil {
 		t.Fatalf("unable to retrieve tournament.\nERR : %v\n", err)
 	}

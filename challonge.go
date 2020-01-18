@@ -274,6 +274,24 @@ func (t *Tournament) Randomize() error {
 	return nil
 }
 
+func (t *Tournament) Reset() error {
+	v := *params(map[string]string{
+		"include_participants": "1",
+		"include_matches":      "1",
+	})
+	url := client.buildUrl("tournaments/"+t.GetUrl()+"/reset", v)
+	response := &APIResponse{}
+	doPost(url, response)
+	if response.hasErrors() {
+		return fmt.Errorf("error randomizing participants:  %q", response.Errors[0])
+	}
+	fmt.Printf("resp : %v\n", response)
+	if response == nil {
+		return fmt.Errorf("error randomizing participants")
+	}
+	return nil
+}
+
 func (t *Tournament) Destroy() error {
 	url := client.buildUrl("tournaments/"+t.GetUrl(), nil)
 	response := &APIResponse{}

@@ -218,11 +218,41 @@ func (c *Client) CreateTournament(name string, subUrl string, domain string, ope
 		"tournament[open_signup]": "false",
 		"tournament[subdomain]":   domain,
 		"tournament[description]": desc,
+		// tournament[game_name] // ?
+		// tournament[open_signup] // ?
+		// tournament[registration_type]  // ?
+		// tournament[group_stages_enabled] // ?
+		// tournament[group_stages_attributes][0][stage_type] // "single elimination", "double elimination", "round robin".
+		// tournament[group_stages_attributes][0][rr_iterations] // ?
+		// tournament[group_stages_attributes][0][group_size] // Max group team size?
+		// tournament[group_stages_attributes][0][participant_count_to_advance_per_group] // ?
+		// tournament[group_stages_attributes][0][ranked_by] // ?
+		// tournament[group_stages_attributes][0][tie_breaks][] // ?
+		// tournament[tie_breaks][]// ?
+		// tournament[allow_participant_match_reporting] // Allow match-reporting by participant(challonge-user) ?
+		// tournament[admin_ids_csv] // Admins. comma-separetd
+		// tournament[private] // Private for Search-Engines and Challonge tournament list
+		// tournament[notify_users_when_matches_open] // Notify users when matches are available
+		// tournament[notify_users_when_the_tournament_ends] // Notify users when the tournaments ends
+		// tournament_rr_iterations // ?
+		// tournament[ranked_by] // ?
+		// tournament[teams] // Team or Personal?
+		// tournament_signup_cap // Max team limit
+		// tournament_start_at // ?
+		// tournament[hide_seeds] //?
+		// tournament[quick_advance] // ?
+		// tournament[accept_attachments] // Accept attachment files?
 	})
 	if tType == "" || tType == "single" {
 		v.Add("tournament[tournament_type]", "single elimination")
 	} else if tType == "double" {
 		v.Add("tournament[tournament_type]", "double elimination")
+	}
+	} else if tType == "round robin" {
+		v.Add("tournament[tournament_type]", "round robin")
+	}
+	} else if tType == "swiss" {
+		v.Add("tournament[tournament_type]", "swiss")
 	}
 	url := c.buildUrl("tournaments", v)
 	response := &APIResponse{}

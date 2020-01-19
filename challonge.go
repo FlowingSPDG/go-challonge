@@ -247,10 +247,8 @@ func (c *Client) CreateTournament(name string, subUrl string, domain string, ope
 		v.Add("tournament[tournament_type]", "single elimination")
 	} else if tType == "double" {
 		v.Add("tournament[tournament_type]", "double elimination")
-	}
 	} else if tType == "round robin" {
 		v.Add("tournament[tournament_type]", "round robin")
-	}
 	} else if tType == "swiss" {
 		v.Add("tournament[tournament_type]", "swiss")
 	}

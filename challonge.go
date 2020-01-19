@@ -210,6 +210,104 @@ func (r *TournamentRequest) Get() (*Tournament, error) {
 	return tournament, nil
 }
 
+type CreateTournamentRequest struct {
+	Name                            string `json:"name"`
+	URL                             string `json:"url"`
+	Description                     string `json:"description"`
+	RequireScoreAgreement           bool   `json:"require_score_agreement"`
+	NotifyUserWhenMatchesOpen       bool   `json:"notify_users_when_matches_open"`
+	OpenSignup                      bool   `json:"open_signup"`
+	NotifyUserWhenTheTournamentEnds bool   `json:"notify_users_when_the_tournament_ends"`
+	QuickAdvance                    bool   `json:"quick_advance"`
+	HoldThirdPlaceMatch             bool   `json:"hold_third_place_match"`
+	// Double Elimination or Round Robin related?
+	/*
+		PTsForGameWin float32 `json:"pts_for_game_win"`
+		PTsForGameTie float32 `json:"pts_for_game_tie"`
+		PTsForMatchWin float32 `json:"pts_for_match_win"`
+		PTsForMatchTie float32 `json:"pts_for_match_tie"`
+		PTsForBye float32 `json:"pts_for_bye"`
+	*/
+
+	// Swiss Rounds related?
+	SwissRounds int `json:"swiss_rounds"`
+
+	Private bool `json:"private"`
+	// RankedBy bool `json:"ranked_by"` // "match wins"
+	ShowRounds bool `json:"show_rounds"`
+	HideForum  bool `json:"hide_forum"`
+	// SequentialPairings  bool `json:"sequential_pairings"` // ??
+	AcceptAttachments bool `json:"accept_attachments"`
+
+	// Round robin with Group-stage?
+	/*
+		RoundRobinPTsForGameWin float32 `json:"rr_pts_for_game_win"`
+		RoundRobinPTsForGameTie float32 `json:"rr_pts_for_game_tie"`
+		RoundRobinPTsForMatchWin float32 `json:"rr_pts_for_match_win"`
+		RoundRobinPTsForMatchTie float32 `json:"rr_pts_for_match_tie"`
+		RoundRobinPTsForBye float32 `json:"rr_pts_for_bye"`
+	*/
+
+	// CreatedByAPI  bool `json:"created_by_api"` // always true?
+	// CreditCapped  bool `json:"credit_capped"` // ?
+	// Category ??
+	HideSeeds bool `json:"hide_seeds"`
+
+	// Prediction related?
+	AcceptPredictions               bool `json:"accepting_predictions"` // tournament[voting_enabled] ...?
+	PredictionMethod                int  `json:"prediction_method"`
+	AnonymousVoting                 bool `json:"anonymous_voting"`
+	MaxPredictionsPerUser           int  `json:"max_predictions_per_user"`
+	PublicPredictionBeforeStartTime bool `json:"public_predictions_before_start_time"`
+	PredictTheLosersBracket         bool `json:"predict_the_losers_bracket"`
+
+	// misc
+	SignupCap         int    `json:"signup_cap"`
+	GameID            int    `json:"game_id"`            // https://challonge.com/ja/games.json. 194=CSGO.
+	GameName          string `json:"game_name"`          // https://challonge.com/ja/games.json. 194=CSGO.
+	ParticipantsCount int    `json:"participants_count"` // available participants number?
+
+	// Group stages related
+	GroupStagesEabled bool `json:"group_stages_enabled"`
+
+	AllowParticipantMatchReporting bool `json:"allow_participant_match_reporting"`
+	Teams                          bool `json:"teams"` // team or persoal participant
+	// CheckInDuration check_in_duration // null?
+
+	// Tie breaks?
+	/*
+			"tie_breaks": [
+		        "match wins vs tied",
+		        "game wins",
+		        "points scored"
+		    ],
+	*/
+
+	// EventID interface{} `json:"event_id"` // null?
+	Ranked bool `json:"ranked"`
+	// GrandFinalsModifier interface{} `json:"grand_finals_modifier"` // null?
+	// Spam interface{} `json:"spam"` // null?
+	// Ham interface{} `json:"ham"` // null...?? WTF?
+	RoundRobinIterations int `json:"rr_iterations"`
+	// TournamentRegistrationID interface{} `json:"tournament_registration_id"` // null?
+	// DonationContestEnabled interface{} `json:"donation_contest_enabled"` // null?
+	// MandatoryDonation interface{} `json:"mandatory_donation"` // null?
+	/*
+			"non_elimination_tournament_data": {
+		            "participants_per_match": ""
+		        },
+	*/
+	// AutoAsignStations interface{} `json:"auto_assign_stations"` // null?
+	// OnlyStartMatchesWithStations interface{} `json:"only_start_matches_with_stations"` // null?
+	RegistrationFee  float32 `json:"registration_fee"`
+	RegistrationType string  `json:"registration_type"`
+	// SplitParticipants bool `json:"split_participants"` // ?
+	ParticipantsSwappable bool `json:"participants_swappable"`
+	TeamConvertable       bool `json:"team_convertable"`
+
+	Subdomain string `json:"subdomain"`
+}
+
 /** creates a new tournament */
 func (c *Client) CreateTournament(name string, subUrl string, domain string, open bool, tType string, desc string) (*Tournament, error) {
 	v := *params(map[string]string{
@@ -218,9 +316,8 @@ func (c *Client) CreateTournament(name string, subUrl string, domain string, ope
 		"tournament[open_signup]": "false",
 		"tournament[subdomain]":   domain,
 		"tournament[description]": desc,
-		// tournament[game_name] // ?
-		// tournament[open_signup] // ?
-		// tournament[registration_type]  // ?
+		// tournament[public_sign_up]
+		// tournament[organization_id] //
 		// tournament[group_stages_enabled] // ?
 		// tournament[group_stages_attributes][0][stage_type] // "single elimination", "double elimination", "round robin".
 		// tournament[group_stages_attributes][0][rr_iterations] // ?
@@ -228,20 +325,14 @@ func (c *Client) CreateTournament(name string, subUrl string, domain string, ope
 		// tournament[group_stages_attributes][0][participant_count_to_advance_per_group] // ?
 		// tournament[group_stages_attributes][0][ranked_by] // ?
 		// tournament[group_stages_attributes][0][tie_breaks][] // ?
+		// tournament[grand_finals_modifier]
 		// tournament[tie_breaks][]// ?
-		// tournament[allow_participant_match_reporting] // Allow match-reporting by participant(challonge-user) ?
 		// tournament[admin_ids_csv] // Admins. comma-separetd
-		// tournament[private] // Private for Search-Engines and Challonge tournament list
-		// tournament[notify_users_when_matches_open] // Notify users when matches are available
-		// tournament[notify_users_when_the_tournament_ends] // Notify users when the tournaments ends
-		// tournament_rr_iterations // ?
+		// tournament_rr_iterations // ??
 		// tournament[ranked_by] // ?
-		// tournament[teams] // Team or Personal?
-		// tournament_signup_cap // Max team limit
-		// tournament_start_at // ?
-		// tournament[hide_seeds] //?
-		// tournament[quick_advance] // ?
-		// tournament[accept_attachments] // Accept attachment files?
+		// tournament[start_at] // ?
+		// tournament[check_in_duration] // in minute?
+		// tournament[voting_enabled] // predictions enabled?
 	})
 	if tType == "" || tType == "single" {
 		v.Add("tournament[tournament_type]", "single elimination")

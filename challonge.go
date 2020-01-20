@@ -52,6 +52,7 @@ type Tournament struct {
 	Description       string     `json:"description"`
 	GameName          string     `json:"game_name"`
 	Progress          int        `json:"progress_meter"`
+	SignupCap         int        `json:"signup_cap"`
 
 	SubUrl string `json:"sub_url"`
 

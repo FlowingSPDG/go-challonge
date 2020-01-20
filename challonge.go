@@ -309,13 +309,15 @@ type CreateTournamentRequest struct {
 }
 
 /** creates a new tournament */
-func (c *Client) CreateTournament(name string, subUrl string, domain string, open bool, tType string, desc string) (*Tournament, error) {
+func (c *Client) CreateTournament(name string, subUrl string, domain string, open bool, tType string, desc string, signupcap int) (*Tournament, error) {
 	v := *params(map[string]string{
 		"tournament[name]":        name,
 		"tournament[url]":         subUrl,
 		"tournament[open_signup]": "false",
 		"tournament[subdomain]":   domain,
 		"tournament[description]": desc,
+		"tournament[signup_cap]":  strconv.Itoa(signupcap),
+
 		// tournament[public_sign_up]
 		// tournament[organization_id] //
 		// tournament[group_stages_enabled] // ?
